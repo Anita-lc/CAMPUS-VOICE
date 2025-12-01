@@ -1,13 +1,13 @@
-# Campus Voice - Web-Based Feedback System
+# Campus Voice - Web-Based Feedback System For Campus Engagement
 
-A comprehensive web-based feedback system designed to facilitate effective communication between students and university administration.
+A comprehensive web-based feedback system for campus engagement designed to facilitate effective communication between students and university administration.
 
 ## Features
 
 - **User Authentication**: Secure login and registration system
-- **Feedback Submission**: Submit feedback with categories, priorities, and anonymous options
+- **Feedback Submission**: Submit feedback with categories, and anonymous options
 - **AI Duplicate Detection**: Automatically detect similar feedback submissions
-- **Social Media Integration**: Track campus-related posts from Twitter, Instagram, TikTok
+- **Social Media Integration**: Track campus-related posts from social media
 - **Real-time Status Tracking**: Monitor feedback progress from submission to resolution
 - **Admin Dashboard**: Comprehensive management interface for administrators
 - **Polls & Surveys**: Engage students in campus decision-making
@@ -19,13 +19,13 @@ A comprehensive web-based feedback system designed to facilitate effective commu
 - **Backend**: PHP 7.4+
 - **Database**: MySQL 8.0+
 - **Server**: Apache (XAMPP)
-- **APIs**: Social Media APIs (Twitter, Instagram, TikTok)
+- **APIs**: Social Media APIs 
 
 ## Installation
 
 ### Prerequisites
 
-- XAMPP (or similar LAMP/WAMP stack)
+- XAMPP 
 - PHP 7.4 or higher
 - MySQL 8.0 or higher
 - Web browser
@@ -62,8 +62,6 @@ A comprehensive web-based feedback system designed to facilitate effective commu
 6. **Access the Application**
    - Open browser and navigate to: `http://localhost/C.VOICE`
 
-
-**Important**: Change the default admin password after first login!
 
 ## Project Structure
 
@@ -105,23 +103,7 @@ Monitors campus-related hashtags across social media platforms:
 - Session management
 - File upload validation
 
-## Configuration
 
-### Campus Hashtags
-
-Edit `includes/config.php` to customize monitored hashtags:
-```php
-define('CAMPUS_HASHTAGS', [
-    '#Strathmore',
-    '#StrathmoreUniversity',
-    '#CampusVoice',
-    '#StudentFeedback'
-]);
-```
-
-### Email Notifications
-
-Configure SMTP settings in `includes/config.php` for email notifications.
 
 ## Usage
 
@@ -154,11 +136,6 @@ Configure SMTP settings in `includes/config.php` for email notifications.
 
 This project was developed as part of a university initiative to improve campus engagement and communication.
 
-## Alignment with SDGs
-
-This project aligns with:
-- **SDG 4**: Quality Education
-- **SDG 16**: Peace, Justice, and Strong Institutions
 
 ## Support
 
