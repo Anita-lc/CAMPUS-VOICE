@@ -28,7 +28,6 @@ define('DB_NAME', 'default');
 // OpenAI API Configuration
 define('OPENAI_API_KEY', 'your-api-key-here'); // Replace with your actual OpenAI API key
 define('OPENAI_EMBEDDING_MODEL', 'text-embedding-3-small'); // or 'text-embedding-3-large' for better results
-define('DB_NAME', 'campus_voice');
 
 // Site Configuration
 define('SITE_NAME', 'Campus Voice');

@@ -1,7 +1,9 @@
 <?php
 return [
-    'host' => 'localhost',
-    'username' => 'root',      // Default XAMPP username
-    'password' => '',          // Default XAMPP password (empty)
-    'database' => 'campus_voice'  // Your database name
+    'host' => '38.242.241.148',
+    'port' => 5432,
+    'username' => 'mysql',
+    'password' => '3Ib0gaJSlqdHPsEyXCu4IeEThPIs2KpIDtxaxsCxmdPQ8NXWS79Iwh80gWBFlf6F',
+    
+    'database' => 'default'
 ];

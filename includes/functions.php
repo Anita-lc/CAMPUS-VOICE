@@ -14,7 +14,7 @@ function getDB() {
     static $pdo;
     if (!isset($pdo)) {
         $config = require __DIR__ . '/../config/database.php';
-        $dsn = "mysql:host={$config['host']};dbname={$config['database']};charset=utf8mb4";
+        $dsn = "mysql:host={$config['host']};port={$config['port']};dbname={$config['database']};charset=utf8mb4";
         
         try {
             $pdo = new PDO($dsn, $config['username'], $config['password'], [
