@@ -15,10 +15,14 @@ if (defined('CAMPUS_VOICE_CONFIG_LOADED')) {
 define('CAMPUS_VOICE_CONFIG_LOADED', true);
 
 // Database Configuration
-define('DB_HOST', 'mysql');
-define('DB_USER', 'root');
-define('DB_PASS', 'ioJ82TflaJPCdDXxK5Y8XPDhzXQHTf4QLUdhLDzkmWCET5O8LpcpzV1bs3Q2zDjy');
+define('DB_HOST', '38.242.241.148');
+define('DB_USER', 'mysql');
+define('DB_PASS', '3Ib0gaJSlqdHPsEyXCu4IeEThPIs2KpIDtxaxsCxmdPQ8NXWS79Iwh80gWBFlf6F');
 define('DB_PORT', 5432);
+
+// Database Name
+define('DB_NAME', 'default');
+
 
 
 // OpenAI API Configuration
