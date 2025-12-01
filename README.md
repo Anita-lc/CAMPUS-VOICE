@@ -162,7 +162,7 @@ This project aligns with:
 
 ## Support
 
-For support or questions, contact: support@campusvoice.edu
+For support or questions, contact: campus.voice.w@gmail.com
 
 ## License
 

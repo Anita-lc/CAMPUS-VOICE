@@ -73,12 +73,6 @@ $recent_surveys = $db->query("
     LIMIT 3
 ")->fetchAll();
 
-// Social media metrics (placeholder data)
-$social_metrics = [
-    'twitter' => ['followers' => 0, 'mentions' => 0],
-    'facebook' => ['followers' => 0, 'mentions' => 0],
-    'instagram' => ['followers' => 0, 'mentions' => 0]
-];
 
 // Check for duplicate feedback (AI-powered)
 $duplicate_alerts = [];

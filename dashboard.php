@@ -106,12 +106,7 @@ $feedback_stats = [
     'in_progress' => 0
 ];
 
-// Get social media metrics (placeholder data for now)
-$social_metrics = [
-    'twitter' => ['followers' => 0, 'mentions' => 0],
-    'facebook' => ['followers' => 0, 'mentions' => 0],
-    'instagram' => ['followers' => 0, 'mentions' => 0]
-];
+
 
 // Check for duplicate feedback (AI-powered)
 $duplicate_alerts = [];
