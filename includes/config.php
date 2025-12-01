@@ -15,7 +15,7 @@ if (defined('CAMPUS_VOICE_CONFIG_LOADED')) {
 define('CAMPUS_VOICE_CONFIG_LOADED', true);
 
 // Database Configuration
-define('DB_HOST', 'mysql-database-docswcw4cs0gcckk40c04cww');
+define('DB_HOST', 'mysql');
 define('DB_USER', 'root');
 define('DB_PASS', 'lUlceU2YvoQTQ6dfmPAFPJqSJKETMSRV3ZsqBySgoAzTL4k4sRNWbRiu6hZhsjoZ');
 define('DB_NAME', 'default');
