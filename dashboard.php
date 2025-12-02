@@ -276,28 +276,33 @@ if (!empty($recent_feedback)) {
                     <?php else: ?>
                         <!-- User Statistics -->
                         <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-card-icon primary">
-                                    <i class="fas fa-paper-plane"></i>
+                            <a href="view-feedback.php?user=me&status=submitted" class="text-decoration-none">
+                                <div class="stat-card">
+                                    <div class="stat-card-icon primary">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </div>
+                                    <h3><?php echo htmlspecialchars($user_feedback_stats['submitted'] ?? 0); ?></h3>
+                                    <p class="text-muted mb-0">Submitted</p>
                                 </div>
-                                <h3><?php echo htmlspecialchars($user_feedback_stats['submitted'] ?? 0); ?></h3>
-                                <p class="text-muted mb-0">Submitted</p>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-card-icon primary">
-                                    <i class="fas fa-eye"></i>
+                            <a href="view-feedback.php?user=me&status=viewed" class="text-decoration-none">
+                                <div class="stat-card">
+                                    <div class="stat-card-icon primary">
+                                        <i class="fas fa-eye"></i>
+                                    </div>
+                                    <h3><?php echo htmlspecialchars($user_feedback_stats['viewed'] ?? 0); ?></h3>
+                                    <p class="text-muted mb-0">Viewed</p>
                                 </div>
-                                <h3><?php echo htmlspecialchars($user_feedback_stats['viewed'] ?? 0); ?></h3>
-                                <p class="text-muted mb-0">Viewed</p>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-card-icon success">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
+                            <a href="view-feedback.php?user=me&status=resolved" class="text-decoration-none">
+                                <div class="stat-card">
+                                    <div class="stat-card-icon success">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
                                 <h3><?php echo htmlspecialchars($user_feedback_stats['resolved'] ?? 0); ?></h3>
                                 <p class="text-muted mb-0">Resolved</p>
                             </div>
