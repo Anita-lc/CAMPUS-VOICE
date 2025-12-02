@@ -1,0 +1,165 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model categories {
+  id          Int        @id @default(autoincrement())
+  name        String     @db.VarChar(100)
+  description String?    @db.Text
+  feedback    feedback[]
+}
+
+model email_logs {
+  id         Int      @id @default(autoincrement())
+  email      String   @db.VarChar(255)
+  subject    String   @db.VarChar(255)
+  status     String   @db.VarChar(50)
+  created_at DateTime @default(now()) @db.Timestamp(0)
+
+  @@index([created_at], map: "created_at")
+  @@index([email], map: "email")
+}
+
+model feedback {
+  id                 Int                  @id @default(autoincrement())
+  user_id            Int
+  email              String               @db.VarChar(255)
+  category_id        Int
+  title              String               @db.VarChar(255)
+  description        String               @db.Text
+  status             feedback_status?     @default(pending)
+  duplicate_of       Int?
+  file_path          String?              @db.VarChar(255)
+  is_anonymous       Boolean?             @default(false)
+  created_at         DateTime             @default(now()) @db.Timestamp(0)
+  admin_response     String?              @db.Text
+  users              users                @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "feedback_ibfk_1")
+  categories         categories           @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "feedback_ibfk_2")
+  feedback           feedback?            @relation("feedbackTofeedback", fields: [duplicate_of], references: [id], onUpdate: Restrict, map: "feedback_ibfk_3")
+  other_feedback     feedback[]           @relation("feedbackTofeedback")
+  feedback_responses feedback_responses[]
+
+  @@index([category_id], map: "category_id")
+  @@index([duplicate_of], map: "duplicate_of")
+  @@index([user_id], map: "user_id")
+}
+
+model feedback_responses {
+  id          Int      @id @default(autoincrement())
+  feedback_id Int
+  user_id     Int
+  response    String   @db.Text
+  created_at  DateTime @default(now()) @db.Timestamp(0)
+  feedback    feedback @relation(fields: [feedback_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "feedback_responses_ibfk_1")
+  users       users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "feedback_responses_ibfk_2")
+
+  @@index([feedback_id], map: "feedback_id")
+  @@index([user_id], map: "user_id")
+}
+
+model notifications {
+  id           Int       @id @default(autoincrement())
+  user_id      Int
+  title        String    @db.VarChar(255)
+  message      String    @db.Text
+  type         String?   @db.VarChar(50)
+  reference_id Int?
+  created_at   DateTime  @default(now()) @db.Timestamp(0)
+  read_at      DateTime? @db.Timestamp(0)
+  users        users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_notifications_user")
+
+  @@index([reference_id], map: "idx_reference_id")
+  @@index([type], map: "idx_type")
+  @@index([user_id], map: "idx_user_id")
+}
+
+model poll_options {
+  id          Int          @id @default(autoincrement())
+  poll_id     Int
+  option_text String       @db.VarChar(255)
+  vote_count  Int?         @default(0)
+  polls       polls        @relation(fields: [poll_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "poll_options_ibfk_1")
+  poll_votes  poll_votes[]
+
+  @@index([poll_id], map: "poll_id")
+}
+
+model poll_votes {
+  id           Int          @id @default(autoincrement())
+  poll_id      Int
+  option_id    Int
+  user_id      Int
+  created_at   DateTime     @default(now()) @db.Timestamp(0)
+  polls        polls        @relation(fields: [poll_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "poll_votes_ibfk_1")
+  poll_options poll_options @relation(fields: [option_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "poll_votes_ibfk_2")
+  users        users        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "poll_votes_ibfk_3")
+
+  @@unique([poll_id, user_id], map: "unique_vote")
+  @@index([option_id], map: "option_id")
+  @@index([user_id], map: "user_id")
+}
+
+model polls {
+  id               Int            @id @default(autoincrement())
+  question         String         @db.VarChar(255)
+  description      String?        @db.Text
+  status           polls_status   @default(draft)
+  start_date       DateTime?      @db.DateTime(0)
+  end_date         DateTime?      @db.DateTime(0)
+  allow_multiple   Boolean        @default(false)
+  show_results     Boolean        @default(true)
+  anonymous_voting Boolean        @default(false)
+  created_at       DateTime       @default(now()) @db.DateTime(0)
+  updated_at       DateTime?      @db.DateTime(0)
+  created_by       Int?
+  poll_options     poll_options[]
+  poll_votes       poll_votes[]
+  users            users?         @relation(fields: [created_by], references: [id], onUpdate: Restrict, map: "fk_polls_created_by")
+
+  @@index([end_date], map: "end_date")
+  @@index([created_by], map: "fk_polls_created_by")
+  @@index([start_date], map: "start_date")
+  @@index([status], map: "status")
+}
+
+model users {
+  id                 Int                  @id @default(autoincrement())
+  student_id         String?              @unique(map: "student_id") @db.VarChar(50)
+  first_name         String               @db.VarChar(100)
+  last_name          String               @db.VarChar(100)
+  email              String               @unique(map: "email") @db.VarChar(255)
+  password           String               @db.VarChar(255)
+  phone              String?              @db.VarChar(20)
+  department         String?              @db.VarChar(100)
+  year_of_study      Int?
+  role               users_role?          @default(student)
+  created_at         DateTime             @default(now()) @db.Timestamp(0)
+  feedback           feedback[]
+  feedback_responses feedback_responses[]
+  notifications      notifications[]
+  poll_votes         poll_votes[]
+  polls              polls[]
+}
+
+enum polls_status {
+  draft
+  active
+  upcoming
+  ended
+}
+
+enum feedback_status {
+  pending
+  in_progress
+  resolved
+}
+
+enum users_role {
+  student
+  admin
+}

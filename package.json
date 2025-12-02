@@ -18,6 +18,10 @@
   },
   "homepage": "https://github.com/Anita-lc/CAMPUS-VOICE#readme",
   "dependencies": {
+    "@prisma/client": "^7.0.1",
     "string-similarity": "^4.0.4"
+  },
+  "devDependencies": {
+    "prisma": "^7.0.1"
   }
 }
