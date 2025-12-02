@@ -1,0 +1,221 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model categories {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(100)
+  icon        String?   @default("fa-folder") @db.VarChar(50)
+  description String?   @db.Text
+  created_at  DateTime? @default(now()) @db.Timestamp(0)
+}
+
+model feedback {
+  id                                                             Int                   @id @default(autoincrement())
+  user_id                                                        Int
+  title                                                          String                @db.VarChar(255)
+  description                                                    String?               @db.Text
+  email                                                          String                @db.VarChar(255)
+  file_path                                                      String?               @db.VarChar(255)
+  category_id                                                    Int?
+  status                                                         feedback_status?      @default(pending)
+  resolution                                                     String?               @db.Text
+  priority                                                       feedback_priority?    @default(medium)
+  is_anonymous                                                   Boolean?              @default(false)
+  duplicate_of                                                   Int?
+  created_at                                                     DateTime?             @default(now()) @db.Timestamp(0)
+  updated_at                                                     DateTime?             @default(now()) @db.Timestamp(0)
+  feedback_duplicates_feedback_duplicates_feedback_idTofeedback  feedback_duplicates[] @relation("feedback_duplicates_feedback_idTofeedback")
+  feedback_duplicates_feedback_duplicates_duplicate_ofTofeedback feedback_duplicates[] @relation("feedback_duplicates_duplicate_ofTofeedback")
+  feedback_responses                                             feedback_responses[]
+
+  @@fulltext([title, description], map: "title")
+}
+
+model feedback_duplicates {
+  id                                                  Int       @id @default(autoincrement())
+  feedback_id                                         Int
+  duplicate_of                                        Int
+  similarity_score                                    Float     @db.Float
+  created_at                                          DateTime? @default(now()) @db.Timestamp(0)
+  feedback_feedback_duplicates_feedback_idTofeedback  feedback  @relation("feedback_duplicates_feedback_idTofeedback", fields: [feedback_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "feedback_duplicates_ibfk_1")
+  feedback_feedback_duplicates_duplicate_ofTofeedback feedback  @relation("feedback_duplicates_duplicate_ofTofeedback", fields: [duplicate_of], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "feedback_duplicates_ibfk_2")
+
+  @@unique([feedback_id, duplicate_of], map: "unique_duplicate")
+  @@index([duplicate_of], map: "duplicate_of")
+}
+
+model feedback_responses {
+  id          Int       @id @default(autoincrement())
+  feedback_id Int
+  user_id     Int
+  response    String    @db.Text
+  created_at  DateTime? @default(now()) @db.Timestamp(0)
+  feedback    feedback  @relation(fields: [feedback_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "feedback_responses_ibfk_1")
+  users       users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "feedback_responses_ibfk_2")
+
+  @@index([feedback_id], map: "feedback_id")
+  @@index([user_id], map: "user_id")
+}
+
+model notifications {
+  id           Int       @id @default(autoincrement())
+  user_id      Int
+  title        String    @db.VarChar(255)
+  message      String    @db.Text
+  type         String    @db.VarChar(50)
+  reference_id Int?
+  created_at   DateTime? @default(now()) @db.Timestamp(0)
+  read_at      DateTime? @db.Timestamp(0)
+  users        users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "notifications_ibfk_1")
+
+  @@index([user_id, read_at], map: "user_read_idx")
+}
+
+model poll_options {
+  id          Int          @id @default(autoincrement())
+  poll_id     Int
+  option_text String       @db.VarChar(255)
+  created_at  DateTime     @default(now()) @db.DateTime(0)
+  polls       polls        @relation(fields: [poll_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "poll_options_ibfk_1")
+  poll_votes  poll_votes[]
+
+  @@index([poll_id], map: "poll_id")
+}
+
+model poll_responses {
+  id              Int       @id @default(autoincrement())
+  poll_id         Int
+  user_id         Int
+  selected_option Int
+  created_at      DateTime? @default(now()) @db.Timestamp(0)
+  polls           polls     @relation(fields: [poll_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "poll_responses_ibfk_1")
+  users           users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "poll_responses_ibfk_2")
+
+  @@unique([poll_id, user_id], map: "unique_poll_response")
+  @@index([user_id], map: "user_id")
+}
+
+model poll_votes {
+  id           Int          @id @default(autoincrement())
+  poll_id      Int
+  option_id    Int
+  user_id      Int?
+  ip_address   String?      @db.VarChar(45)
+  user_agent   String?      @db.VarChar(255)
+  created_at   DateTime     @default(now()) @db.DateTime(0)
+  polls        polls        @relation(fields: [poll_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "poll_votes_ibfk_1")
+  poll_options poll_options @relation(fields: [option_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "poll_votes_ibfk_2")
+  users        users?       @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "poll_votes_ibfk_3")
+
+  @@unique([poll_id, user_id], map: "poll_user")
+  @@index([ip_address], map: "ip_address")
+  @@index([option_id], map: "option_id")
+  @@index([user_id], map: "poll_votes_ibfk_3")
+}
+
+model polls {
+  id               Int              @id @default(autoincrement())
+  user_id          Int
+  question         String           @db.Text
+  description      String?          @db.Text
+  status           polls_status     @default(draft)
+  start_date       DateTime?        @db.DateTime(0)
+  options          Json
+  end_date         DateTime         @db.DateTime(0)
+  allow_multiple   Boolean          @default(false)
+  show_results     Boolean          @default(true)
+  anonymous_voting Boolean          @default(false)
+  is_public        Boolean?         @default(true)
+  created_at       DateTime?        @default(now()) @db.Timestamp(0)
+  created_by       Int?
+  updated_at       DateTime?        @default(now()) @db.Timestamp(0)
+  poll_options     poll_options[]
+  poll_responses   poll_responses[]
+  poll_votes       poll_votes[]
+  users            users            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "polls_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+model survey_responses {
+  id         Int       @id @default(autoincrement())
+  survey_id  Int
+  user_id    Int
+  responses  Json
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  surveys    surveys   @relation(fields: [survey_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "survey_responses_ibfk_1")
+  users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "survey_responses_ibfk_2")
+
+  @@index([survey_id], map: "survey_id")
+  @@index([user_id], map: "user_id")
+}
+
+model surveys {
+  id               Int                @id @default(autoincrement())
+  user_id          Int
+  title            String             @db.VarChar(255)
+  description      String?            @db.Text
+  questions        Json
+  end_date         DateTime?          @db.DateTime(0)
+  is_public        Boolean?           @default(true)
+  created_at       DateTime?          @default(now()) @db.Timestamp(0)
+  updated_at       DateTime?          @default(now()) @db.Timestamp(0)
+  survey_responses survey_responses[]
+  users            users              @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "surveys_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+model users {
+  id                 Int                  @id @default(autoincrement())
+  first_name         String               @db.VarChar(100)
+  last_name          String?              @db.VarChar(100)
+  email              String               @unique(map: "email") @db.VarChar(255)
+  phone              String?              @db.VarChar(20)
+  department         String?              @db.VarChar(100)
+  year_of_study      Int?
+  student_id         String?              @db.VarChar(50)
+  password           String               @db.VarChar(255)
+  role               users_role           @default(student)
+  is_active          Boolean              @default(true)
+  email_verified     Boolean              @default(false)
+  created_at         DateTime?            @default(now()) @db.Timestamp(0)
+  updated_at         DateTime?            @default(now()) @db.Timestamp(0)
+  feedback_responses feedback_responses[]
+  notifications      notifications[]
+  poll_responses     poll_responses[]
+  poll_votes         poll_votes[]
+  polls              polls[]
+  survey_responses   survey_responses[]
+  surveys            surveys[]
+}
+
+enum polls_status {
+  draft
+  active
+  upcoming
+  ended
+}
+
+enum feedback_status {
+  pending
+  in_progress
+  resolved
+}
+
+enum users_role {
+  student
+  admin
+}
+
+enum feedback_priority {
+  low
+  medium
+  high
+}

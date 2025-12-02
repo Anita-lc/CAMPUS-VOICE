@@ -80,3 +80,5 @@ config/development.php
 
 # Ignore any .htpasswd files if present
 .htpasswd
+
+/generated/prisma
